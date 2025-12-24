@@ -8,9 +8,11 @@ import { Drone } from '../entities/Drone.js';
 import { PowerUp } from '../entities/PowerUp.js';
 
 export class WaveManager {
-    constructor(scene, graphicsSystem) {
+    constructor(scene, graphicsSystem, shaderSystem, advancedParticles) {
         this.scene = scene;
         this.graphicsSystem = graphicsSystem;
+        this.shaderSystem = shaderSystem;
+        this.advancedParticles = advancedParticles;
 
         this.currentWave = 1;
         this.drones = [];
@@ -62,7 +64,7 @@ export class WaveManager {
         for (let i = this.drones.length - 1; i >= 0; i--) {
             const drone = this.drones[i];
 
-            drone.update(deltaTime, playerPosition, timeScale);
+            drone.update(deltaTime, playerPosition, timeScale, this.advancedParticles);
 
             // 플레이어와 충돌 체크
             if (drone.getIsActive() && drone.checkCollision(playerPosition, 0.6)) {
@@ -75,6 +77,9 @@ export class WaveManager {
                 } else {
                     // 쉴드로 막음
                     particleSystem.createExplosion(drone.getPosition(), 0x00ccff, 0.5);
+                    if (this.advancedParticles) {
+                        this.advancedParticles.createExplosion(drone.getPosition(), 0x00ccff, 0.8);
+                    }
                     audioManager.play('explosion');
                 }
 
@@ -147,6 +152,7 @@ export class WaveManager {
         const drone = new Drone(
             this.scene,
             this.graphicsSystem,
+            this.shaderSystem,
             pattern,
             this.difficulty
         );

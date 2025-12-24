@@ -7,14 +7,17 @@ import { GameConfig, AIPatterns } from '../core/Config.js';
 import { MathUtils } from '../utils/MathUtils.js';
 
 export class Drone {
-    constructor(scene, graphicsSystem, aiPattern, difficulty = 1) {
+    constructor(scene, graphicsSystem, shaderSystem, aiPattern, difficulty = 1) {
         this.scene = scene;
         this.graphicsSystem = graphicsSystem;
+        this.shaderSystem = shaderSystem;
         this.aiPattern = aiPattern;
         this.difficulty = difficulty;
 
         this.mesh = null;
         this.propellers = [];
+        this.glowMesh = null;
+        this.trail = null;
 
         this.position = { x: 0, y: GameConfig.DRONE.SPAWN_HEIGHT, z: 0 };
         this.velocity = { x: 0, y: 0, z: 0 };
@@ -100,6 +103,11 @@ export class Drone {
 
         // AI 패턴에 따른 색상 변경
         this._setPatternColor();
+
+        // 후광 효과 추가
+        if (this.shaderSystem) {
+            this._addGlowEffect();
+        }
     }
 
     /**
@@ -123,6 +131,8 @@ export class Drone {
                 break;
         }
 
+        this.patternColor = color;
+
         const body = this.mesh.children[0];
         if (body.material) {
             body.material.color.setHex(color);
@@ -131,9 +141,24 @@ export class Drone {
     }
 
     /**
+     * 후광 효과 추가
+     */
+    _addGlowEffect() {
+        const body = this.mesh.children[0];
+
+        this.glowMesh = this.shaderSystem.createGlowMesh(
+            body,
+            this.patternColor,
+            1.5
+        );
+
+        this.mesh.add(this.glowMesh);
+    }
+
+    /**
      * 업데이트
      */
-    update(deltaTime, playerPosition, timeScale = 1) {
+    update(deltaTime, playerPosition, timeScale = 1, advancedParticles = null) {
         if (!this.isActive) return;
 
         // AI 업데이트
@@ -174,6 +199,25 @@ export class Drone {
         // 약간의 틸팅
         this.mesh.rotation.x = this.velocity.z * -0.3;
         this.mesh.rotation.z = this.velocity.x * 0.3;
+
+        // 글로우 효과 업데이트
+        if (this.glowMesh && this.glowMesh.material.uniforms) {
+            this.shaderSystem.updateUniforms(this.glowMesh.material, deltaTime);
+
+            // 펄스 효과
+            const pulse = Math.sin(Date.now() * 0.003) * 0.3 + 1.0;
+            this.glowMesh.material.uniforms.intensity.value = 1.5 * pulse;
+        }
+
+        // 엔진 스파크 효과
+        if (advancedParticles && Math.random() < 0.1) {
+            advancedParticles.emitSparks(
+                this.position,
+                { x: -this.velocity.x * 0.5, y: -0.5, z: -this.velocity.z * 0.5 },
+                2,
+                this.patternColor
+            );
+        }
 
         // 화면 밖으로 나가면 비활성화
         if (this.position.y < GameConfig.DRONE.DESPAWN_HEIGHT) {

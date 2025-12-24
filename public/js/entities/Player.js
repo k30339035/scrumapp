@@ -6,12 +6,15 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.m
 import { GameConfig } from '../core/Config.js';
 
 export class Player {
-    constructor(scene, graphicsSystem) {
+    constructor(scene, graphicsSystem, shaderSystem) {
         this.scene = scene;
         this.graphicsSystem = graphicsSystem;
+        this.shaderSystem = shaderSystem;
 
         this.mesh = null;
         this.shieldMesh = null;
+        this.energyShield = null;
+        this.trail = null;
 
         this.position = { x: 0, y: 0.5, z: 0 };
         this.velocity = { x: 0, z: 0 };
@@ -74,6 +77,16 @@ export class Player {
         this.shieldMesh = new THREE.Mesh(shieldGeometry, shieldMaterial);
         this.shieldMesh.visible = false;
         this.mesh.add(this.shieldMesh);
+
+        // 에너지 쉴드 (셰이더 효과)
+        if (this.shaderSystem) {
+            this.energyShield = this.shaderSystem.createEnergyShield(
+                GameConfig.PLAYER.SIZE * 1.6,
+                GameConfig.COLORS.SHIELD
+            );
+            this.energyShield.visible = false;
+            this.mesh.add(this.energyShield);
+        }
     }
 
     /**
@@ -141,10 +154,15 @@ export class Player {
             }
         }
 
-        // 쉴드 회전
+        // 쉴드 회전 및 업데이트
         if (this.hasShield && this.shieldMesh.visible) {
             this.shieldMesh.rotation.y += deltaTime * 2;
             this.shieldMesh.rotation.x += deltaTime * 1.5;
+        }
+
+        // 에너지 쉴드 업데이트
+        if (this.energyShield && this.energyShield.visible && this.energyShield.material.uniforms) {
+            this.shaderSystem.updateUniforms(this.energyShield.material, deltaTime);
         }
 
         // 트레일 효과
@@ -166,6 +184,10 @@ export class Player {
     activateShield() {
         this.hasShield = true;
         this.shieldMesh.visible = true;
+
+        if (this.energyShield) {
+            this.energyShield.visible = true;
+        }
     }
 
     /**
@@ -174,6 +196,19 @@ export class Player {
     deactivateShield() {
         this.hasShield = false;
         this.shieldMesh.visible = false;
+
+        if (this.energyShield) {
+            this.energyShield.visible = false;
+        }
+    }
+
+    /**
+     * 쉴드 히트 효과
+     */
+    triggerShieldHit(hitPosition) {
+        if (this.energyShield && this.shaderSystem) {
+            this.shaderSystem.triggerShieldHit(this.energyShield, hitPosition);
+        }
     }
 
     /**

@@ -7,6 +7,8 @@ import { GameState } from './GameState.js';
 import { GraphicsSystem } from '../systems/GraphicsSystem.js';
 import { InputSystem } from '../systems/InputSystem.js';
 import { ParticleSystem } from '../systems/ParticleSystem.js';
+import { ShaderSystem } from '../systems/ShaderSystem.js';
+import { AdvancedParticleSystem } from '../systems/AdvancedParticleSystem.js';
 import { AudioManager } from '../managers/AudioManager.js';
 import { UIManager } from '../managers/UIManager.js';
 import { SaveManager } from '../managers/SaveManager.js';
@@ -20,8 +22,10 @@ export class GameManager {
 
         // 시스템
         this.graphicsSystem = null;
+        this.shaderSystem = null;
         this.inputSystem = null;
         this.particleSystem = null;
+        this.advancedParticles = null;
         this.audioManager = null;
         this.uiManager = null;
         this.saveManager = null;
@@ -52,21 +56,29 @@ export class GameManager {
 
         // 시스템 초기화
         this.graphicsSystem = new GraphicsSystem(this.canvas);
+        this.shaderSystem = new ShaderSystem();
         this.inputSystem = new InputSystem();
         this.particleSystem = new ParticleSystem(this.graphicsSystem.getScene());
+        this.advancedParticles = new AdvancedParticleSystem(
+            this.graphicsSystem.getScene(),
+            this.shaderSystem
+        );
         this.audioManager = new AudioManager();
         this.uiManager = new UIManager(this.gameState);
         this.saveManager = new SaveManager();
         this.waveManager = new WaveManager(
             this.graphicsSystem.getScene(),
-            this.graphicsSystem
+            this.graphicsSystem,
+            this.shaderSystem,
+            this.advancedParticles
         );
         this.performanceMonitor = new PerformanceMonitor();
 
         // 플레이어 생성
         this.player = new Player(
             this.graphicsSystem.getScene(),
-            this.graphicsSystem
+            this.graphicsSystem,
+            this.shaderSystem
         );
 
         // 저장 데이터 로드
@@ -146,6 +158,7 @@ export class GameManager {
         this.player.reset();
         this.waveManager.reset();
         this.particleSystem.clear();
+        this.advancedParticles.clear();
 
         this.waveManager.startWave(1);
 
@@ -189,6 +202,7 @@ export class GameManager {
         this.player.reset();
         this.waveManager.reset();
         this.particleSystem.clear();
+        this.advancedParticles.clear();
 
         // 저장
         this.saveManager.save(this.gameState);
@@ -221,6 +235,7 @@ export class GameManager {
 
         // 파티클 업데이트 (항상)
         this.particleSystem.update(deltaTime);
+        this.advancedParticles.update(deltaTime);
 
         // 렌더링
         this.graphicsSystem.render();
