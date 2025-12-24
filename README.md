@@ -1,71 +1,248 @@
-# Getting Started with Create React App
+# 🚁 Drone Dodge - 드론을 피하라!
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+프로덕션 급 Three.js 기반 3D 웹 게임
 
-## Available Scripts
+## 🎮 게임 소개
 
-In the project directory, you can run:
+고품질 그래픽과 최적화된 성능을 자랑하는 드론 회피 게임입니다.
+다가오는 드론들을 피하며 최고 점수를 달성하세요!
 
-### `yarn start`
+### ✨ 주요 특징
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- **🎨 고품질 그래픽**
+  - PBR (물리 기반 렌더링) 머티리얼
+  - 실시간 그림자 시스템
+  - Bloom & FXAA 후처리 효과
+  - 커스텀 파티클 시스템
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+- **🤖 고급 AI 시스템**
+  - **추적형(Tracking)**: 플레이어를 직접 추적
+  - **예측형(Predictive)**: 플레이어 이동 예측
+  - **집단형(Swarm)**: 협동 공격 패턴
+  - **랜덤형(Random)**: 예측 불가능한 움직임
 
-### `yarn test`
+- **⚡ 성능 최적화**
+  - 동적 품질 조정 (Auto Quality)
+  - 파티클 풀링 시스템
+  - Frustum Culling
+  - 모바일 최적화 (50k 폴리곤 이하)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- **🎯 게임플레이 요소**
+  - 웨이브 시스템 (점진적 난이도 상승)
+  - 콤보 시스템 (연속 회피 보너스)
+  - 3가지 파워업
+    - 🛡️ **Shield**: 1회 피격 방어
+    - ⏰ **Time Slow**: 슬로우 모션
+    - 🧲 **Magnet**: 자동 수집
 
-### `yarn build`
+- **🔊 사운드 시스템**
+  - Web Audio API 기반 프로시저럴 사운드
+  - 실시간 사운드 생성 (에셋 불필요)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- **📱 멀티 플랫폼**
+  - 데스크톱: 키보드, 마우스
+  - 모바일: 터치 & 제스처
+  - 반응형 UI
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## 🏗️ 아키텍처
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### 디렉토리 구조
 
-### `yarn eject`
+```
+public/
+├── index.html
+├── css/
+│   └── styles.css
+└── js/
+    ├── main.js
+    ├── core/
+    │   ├── Config.js           # 게임 설정
+    │   ├── GameState.js        # 상태 관리
+    │   └── GameManager.js      # 핵심 게임 로직
+    ├── entities/
+    │   ├── Player.js           # 플레이어 엔티티
+    │   ├── Drone.js            # 드론 엔티티
+    │   └── PowerUp.js          # 파워업 엔티티
+    ├── managers/
+    │   ├── WaveManager.js      # 웨이브 & 스폰 관리
+    │   ├── UIManager.js        # UI 관리
+    │   ├── AudioManager.js     # 사운드 관리
+    │   └── SaveManager.js      # 저장 관리
+    ├── systems/
+    │   ├── GraphicsSystem.js   # 렌더링 시스템
+    │   ├── InputSystem.js      # 입력 시스템
+    │   └── ParticleSystem.js   # 파티클 시스템
+    ├── ai/
+    │   └── (Drone.js에 통합)
+    └── utils/
+        ├── MathUtils.js        # 수학 유틸
+        └── PerformanceMonitor.js # 성능 모니터
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+### 핵심 클래스
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+#### 1. GameManager
+- 모든 시스템 통합 관리
+- 게임 루프 실행
+- 상태 머신 제어
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+#### 2. GameState
+- 게임 상태 관리 (MENU, PLAYING, PAUSED, GAMEOVER)
+- 점수, 콤보, 웨이브 추적
+- 이벤트 시스템
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+#### 3. GraphicsSystem
+- Three.js 렌더러 관리
+- PBR 머티리얼 생성
+- 조명 & 후처리
 
-## Learn More
+#### 4. WaveManager
+- 드론 스폰 관리
+- 난이도 조절
+- 파워업 생성
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+#### 5. ParticleSystem
+- GPU 가속 파티클
+- 커스텀 셰이더
+- 오브젝트 풀링
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 🎮 조작법
 
-### Code Splitting
+### 키보드
+- **이동**: WASD / 화살표 키
+- **일시정지**: ESC / P
+- **재시작**: R / Enter (게임오버 시)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### 모바일
+- **이동**: 화면 터치 & 드래그
+- **일시정지**: 화면 스와이프
+- **진동 피드백** 지원
 
-### Analyzing the Bundle Size
+## 🚀 시작하기
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### 로컬 서버 실행
 
-### Making a Progressive Web App
+```bash
+# Python 3
+python -m http.server 8000
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+# Node.js (http-server)
+npx http-server public -p 8000
 
-### Advanced Configuration
+# PHP
+php -S localhost:8000 -t public
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+브라우저에서 `http://localhost:8000` 접속
 
-### Deployment
+### 요구사항
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+- 모던 브라우저 (Chrome, Firefox, Safari, Edge)
+- WebGL 2.0 지원
+- ES6 모듈 지원
 
-### `yarn build` fails to minify
+## 📊 성능 최적화 기법
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
-# scrumapp
+1. **동적 품질 조정**
+   - FPS 기반 자동 품질 변경
+   - 그림자 맵 크기 조절
+   - 파티클 수 제한
+
+2. **메모리 최적화**
+   - 오브젝트 풀링
+   - 지오메트리 재사용
+   - 텍스처 최소화
+
+3. **렌더링 최적화**
+   - Frustum Culling
+   - LOD (Level of Detail)
+   - 인스턴싱 (향후 추가 가능)
+
+4. **모바일 최적화**
+   - 낮은 폴리곤 수
+   - 간소화된 셰이더
+   - 터치 입력 최적화
+
+## 🎨 디자인 시스템
+
+### 색상 팔레트 (네온 사이버펑크)
+- **플레이어**: #00ff88 (네온 그린)
+- **드론**: #ff3366 (네온 레드)
+- **Shield**: #00ccff (시안)
+- **Time Slow**: #ffaa00 (앰버)
+- **Magnet**: #ff00ff (마젠타)
+- **배경**: #0f0f1e (다크 블루)
+
+### UI 테마
+- Glitch 효과 타이틀
+- 네온 글로우 효과
+- 사이버펑크 스타일 버튼
+- 애니메이션 트랜지션
+
+## 📈 게임 밸런스
+
+### 난이도 곡선
+- **시작**: 3 드론
+- **증가율**: 웨이브당 +2 드론
+- **난이도 배수**: 1.15^(웨이브-1)
+- **최대 드론**: 50
+
+### 점수 시스템
+- **회피 성공**: 10점
+- **콤보 보너스**: 1.5배 (5콤보마다)
+- **웨이브 완료**: 100점
+- **최대 콤보**: x20
+
+### 파워업 확률
+- **드론 드랍**: 15%
+- **지속 시간**:
+  - Shield: 5초
+  - Time Slow: 4초
+  - Magnet: 6초
+
+## 🔧 기술 스택
+
+- **Three.js** r160 - 3D 렌더링
+- **Web Audio API** - 프로시저럴 사운드
+- **LocalStorage** - 세이브 시스템
+- **ES6 Modules** - 모듈 시스템
+- **Vanilla JS** - 프레임워크 없음
+
+## 📝 라이선스
+
+MIT License
+
+## 👨‍💻 개발 노트
+
+이 프로젝트는 프로덕션 급 웹 게임 개발의 베스트 프랙티스를 보여주기 위해 설계되었습니다:
+
+1. **모듈화된 아키텍처**: 각 시스템은 독립적으로 작동
+2. **성능 우선**: 60 FPS 목표, 자동 품질 조정
+3. **확장성**: 새로운 기능 추가 용이
+4. **유지보수성**: 명확한 코드 구조와 주석
+
+### 향후 개선 사항
+
+- [ ] 인스턴싱을 통한 드론 렌더링 최적화
+- [ ] WebGL 2.0 전용 기능 활용
+- [ ] 더 복잡한 AI 패턴
+- [ ] 멀티플레이어 모드
+- [ ] 리더보드 시스템
+- [ ] PWA 지원
+
+## 🎯 프로젝트 목표
+
+✅ PBR 렌더링 구현
+✅ 실시간 그림자
+✅ 후처리 효과
+✅ 고급 AI 시스템
+✅ 파티클 시스템
+✅ 성능 최적화
+✅ 모바일 지원
+✅ 사운드 시스템
+✅ 세이브 시스템
+✅ 프로덕션 급 UI/UX
+
+---
+
+**즐거운 게임 되세요!** 🎮✨

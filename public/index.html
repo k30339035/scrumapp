@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Dodge the Drones - 3D Web Game">
+    <meta name="theme-color" content="#0f0f1e">
+    <title>Drone Dodge - 드론을 피하라!</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- 게임 캔버스 -->
+    <canvas id="game-canvas"></canvas>
+
+    <!-- 로딩 화면 -->
+    <div id="loading-screen" class="screen">
+        <div class="screen-content">
+            <h1 class="glitch" data-text="DRONE DODGE">DRONE DODGE</h1>
+            <div class="loading-spinner"></div>
+            <p id="loading-progress">0%</p>
+        </div>
+    </div>
+
+    <!-- 메인 메뉴 -->
+    <div id="menu-screen" class="screen" style="display: none;">
+        <div class="screen-content">
+            <h1 class="glitch title" data-text="DRONE DODGE">DRONE DODGE</h1>
+            <p class="subtitle">드론을 피하라!</p>
+
+            <div class="menu-buttons">
+                <button id="start-btn" class="btn btn-primary">
+                    <span>게임 시작</span>
+                </button>
+            </div>
+
+            <div class="highscore">
+                <p id="menu-highscore">HIGH SCORE: 0</p>
+            </div>
+
+            <div class="controls-info">
+                <p><strong>조작법</strong></p>
+                <p>키보드: WASD / 화살표 키</p>
+                <p>모바일: 화면 터치 & 드래그</p>
+                <p>일시정지: ESC / P</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- HUD -->
+    <div id="hud" style="display: none;">
+        <div class="hud-top">
+            <div class="hud-item">
+                <span class="hud-label">SCORE</span>
+                <span id="score" class="hud-value">0</span>
+            </div>
+            <div class="hud-item">
+                <span id="wave" class="hud-value">WAVE 1</span>
+            </div>
+            <div class="hud-item">
+                <span class="hud-label">LIVES</span>
+                <span id="lives" class="hud-value">♥♥♥</span>
+            </div>
+        </div>
+
+        <div id="combo" class="combo" style="display: none;">
+            COMBO x1
+        </div>
+
+        <div id="powerup-active" class="powerup-indicator" style="display: none;">
+            SHIELD
+        </div>
+
+        <div id="wave-message" class="wave-message" style="display: none;">
+            WAVE 1 COMPLETE!
+        </div>
+
+        <div id="touch-hint" class="touch-hint" style="display: none;">
+            화면을 터치하여 이동하세요
+        </div>
+
+        <div id="debug-info" class="debug-info"></div>
+    </div>
+
+    <!-- 일시정지 화면 -->
+    <div id="pause-screen" class="screen overlay" style="display: none;">
+        <div class="screen-content">
+            <h2>일시정지</h2>
+            <div class="menu-buttons">
+                <button id="resume-btn" class="btn btn-primary">
+                    <span>계속하기</span>
+                </button>
+                <button class="btn btn-secondary menu-btn">
+                    <span>메뉴로</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 게임오버 화면 -->
+    <div id="gameover-screen" class="screen overlay" style="display: none;">
+        <div class="screen-content">
+            <h2 class="gameover-title">GAME OVER</h2>
+
+            <div id="new-highscore" class="new-highscore" style="display: none;">
+                🏆 NEW HIGH SCORE! 🏆
+            </div>
+
+            <div class="stats">
+                <div class="stat-item">
+                    <span class="stat-label">FINAL SCORE</span>
+                    <span id="final-score" class="stat-value">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">WAVE REACHED</span>
+                    <span id="final-wave" class="stat-value">1</span>
+                </div>
+            </div>
+
+            <div class="menu-buttons">
+                <button class="btn btn-primary restart-btn">
+                    <span>다시 시작</span>
+                </button>
+                <button class="btn btn-secondary menu-btn">
+                    <span>메뉴로</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 게임 스크립트 (ES6 모듈) -->
+    <script type="module" src="js/main.js"></script>
+
+    <!-- 로딩 스크립트 -->
+    <script>
+        // 로딩 화면 숨기기
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const loadingScreen = document.getElementById('loading-screen');
+                if (loadingScreen) {
+                    loadingScreen.style.opacity = '0';
+                    setTimeout(() => {
+                        loadingScreen.style.display = 'none';
+                    }, 500);
+                }
+            }, 1000);
+        });
+
+        // 모바일 주소창 숨기기
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                window.scrollTo(0, 1);
+            }, 0);
+        });
+    </script>
+</body>
+</html>
